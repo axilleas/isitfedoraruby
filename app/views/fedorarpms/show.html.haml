@@ -48,101 +48,107 @@
       Description:
       =@rpm.description
 
-  %div.row
-    %div.col-md-6
-      %h2
-      = _('Versions:')
-      %table.table.table-striped.table-condensed.table-bordered
-        %thead
-          %tr
-            -FedoraRpm.fedora_versions.each do |t, g|
-              %th= t
-            %th= _('Gem Version')
-        %tbody
-          %tr
-            -FedoraRpm.fedora_versions.each do |t, g|
-              %td= @rpm.version_for(t)
-            %td= @rpm.ruby_gem.version
-  %div.row
-    %div.col-md-6
-      - if @dependencies.blank?
-        %label= _('No dependencies')
-      - else
-        %label= _('Dependencies:')
-
-        %table.table.table-striped.table-condensed.table-bordered
-          %thead
-            %tr
-              %th= _('Package')
-              -FedoraRpm.fedora_versions.each do |t, g|
-                - if g == 'master'
-                  %th= 'Rawhide'
-                - else
-                  %th= g
-              %th= _('Upstream')
-          %tbody
-            - @dependencies.each do |d|
+-#  = bs_tabs do |t|
+    = t.bs_tab_for 'Versions', true do
+      %div.row
+        %div.col-md-6
+          %h2
+          = _('Versions:')
+          %table.table.table-striped.table-condensed.table-bordered
+            %thead
               %tr
-                %td= link_to d.name, fedorarpm_path(d.name)
                 -FedoraRpm.fedora_versions.each do |t, g|
-                  %td= d.version_for(t)
-                %td= d.ruby_gem.version
-    %div.col-md-6
-      - if @dependents.blank?
-        %label= _('No dependents')
-      - else
-        %label= _('Dependents:')
-
-        %table.table.table-striped.table-condensed.table-bordered
-          %thead
-            %tr
-              %th= _('Package')
-              -FedoraRpm.fedora_versions.each do |t, g|
-                - if g == 'master'
-                  %th= 'Rawhide'
-                - else
-                  %th= g
-              %th= _('Upstream')
-          %tbody
-            - @dependents.each do |d|
+                  %th= t
+                %th= _('Gem Version')
+            %tbody
               %tr
-                %td= link_to d.name, fedorarpm_path(d.name)
                 -FedoraRpm.fedora_versions.each do |t, g|
-                  %td= d.version_for(t)
-                %td= d.ruby_gem.version
-  %div.row
-    %div.col-md-6
-      - if @rpm.bugs.blank?
-        %h4 No bugs found!
-      - else
-        %h2
-        = _('Bugs:')
-        %table.table.table-striped.table-condensed.table-bordered
-          %thead
-            %tr
-              %th= _('ID')
-              %th= _('Title')
-          %tbody
-            - @rpm.bugs.each do |b|
-              %tr
-                %td
-                  = link_to b.bz_id, b.url
-                %td
-                  = b.name.truncate(60)
+                  %td= @rpm.version_for(t)
+                %td= @rpm.ruby_gem.version
 
-    %div.col-md-6
-      %h2
-      = _('Builds:')
-      %table.table.table-striped.table-condensed.table-bordered
-        %thead
-          %tr
-            %th= _('Build ID')
-            %th= _('Title')
-        %tbody
-          - @rpm.koji_builds.each do |b|
-            %tr
-              %td
-                = link_to b.build_id, b.build_url
-              %td
-                = b.name.truncate(60)
+    = t.bs_tab_for 'Dependencies' do
+      %div.row
+        %div.col-md-6
+          - if @dependencies.blank?
+            %label= _('No dependencies')
+          - else
+            %label= _('Dependencies:')
+
+            %table.table.table-striped.table-condensed.table-bordered
+              %thead
+                %tr
+                  %th= _('Package')
+                  -FedoraRpm.fedora_versions.each do |t, g|
+                    - if g == 'master'
+                      %th= 'Rawhide'
+                    - else
+                      %th= g
+                  %th= _('Upstream')
+              %tbody
+                - @dependencies.each do |d|
+                  %tr
+                    %td= link_to d.name, fedorarpm_path(d.name)
+                    -FedoraRpm.fedora_versions.each do |t, g|
+                      %td= d.version_for(t)
+                    %td= d.ruby_gem.version
+        %div.col-md-6
+          - if @dependents.blank?
+            %label= _('No dependents')
+          - else
+            %label= _('Dependents:')
+
+            %table.table.table-striped.table-condensed.table-bordered
+              %thead
+                %tr
+                  %th= _('Package')
+                  -FedoraRpm.fedora_versions.each do |t, g|
+                    - if g == 'master'
+                      %th= 'Rawhide'
+                    - else
+                      %th= g
+                  %th= _('Upstream')
+              %tbody
+                - @dependents.each do |d|
+                  %tr
+                    %td= link_to d.name, fedorarpm_path(d.name)
+                    -FedoraRpm.fedora_versions.each do |t, g|
+                      %td= d.version_for(t)
+                    %td= d.ruby_gem.version
+    = t.bs_tab_for 'Bugs' do
+      %div.row
+        %div.col-md-6
+          - if @rpm.bugs.blank?
+            %h4 No bugs found!
+          - else
+            %h2
+            = _('Bugs:')
+            %table.table.table-striped.table-condensed.table-bordered
+              %thead
+                %tr
+                  %th= _('ID')
+                  %th= _('Title')
+              %tbody
+                - @rpm.bugs.each do |b|
+                  %tr
+                    %td
+                      = link_to b.bz_id, b.url
+                    %td
+                      = b.name.truncate(60)
+
+      = t.bs_tab_for 'Builds' do
+        %div.col-md-6
+          %h2
+          = _('Builds:')
+          %table.table.table-striped.table-condensed.table-bordered
+            %thead
+              %tr
+                %th= _('Build ID')
+                %th= _('Title')
+            %tbody
+              - @rpm.koji_builds.each do |b|
+                %tr
+                  %td
+                    = link_to b.build_id, b.build_url
+                  %td
+                    = b.name.truncate(60)
 
